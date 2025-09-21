@@ -4,12 +4,14 @@ const PORT = 3000;
 
 app.use(express.json());
 
-
 let alunos = [];
 
 // CREATE (C)
 app.post("/alunos", (req, res) => {
   const { nome, email, celular, cidade } = req.body;
+  if (!nome || !email || !celular || !cidade) {
+    return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
+  }
   const novoAluno = { id: alunos.length + 1, nome, email, celular, cidade };
   alunos.push(novoAluno);
   res.status(201).json(novoAluno);
@@ -20,9 +22,9 @@ app.get("/alunos", (req, res) => {
   res.json(alunos);
 });
 
-// READ -  por id
+// READ - por id
 app.get("/alunos/:id", (req, res) => {
-  const aluno = alunos.find(a => a.id == req.params.id);
+  const aluno = alunos.find(a => a.id === Number(req.params.id));
   if (!aluno) {
     return res.status(404).json({ erro: "Aluno não encontrado" });
   }
@@ -31,7 +33,7 @@ app.get("/alunos/:id", (req, res) => {
 
 // UPDATE (U)
 app.put("/alunos/:id", (req, res) => {
-  const aluno = alunos.find(a => a.id == req.params.id);
+  const aluno = alunos.find(a => a.id === Number(req.params.id));
   if (!aluno) {
     return res.status(404).json({ erro: "Aluno não encontrado" });
   }
@@ -47,7 +49,7 @@ app.put("/alunos/:id", (req, res) => {
 
 // DELETE (D)
 app.delete("/alunos/:id", (req, res) => {
-  const index = alunos.findIndex(a => a.id == req.params.id);
+  const index = alunos.findIndex(a => a.id === Number(req.params.id));
   if (index === -1) {
     return res.status(404).json({ erro: "Aluno não encontrado" });
   }
